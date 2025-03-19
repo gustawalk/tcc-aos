@@ -14,7 +14,9 @@
       {
         "title": "tcc-aos",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "url": "/login",
+        "devtools": false
       }
     ],
     "security": {
