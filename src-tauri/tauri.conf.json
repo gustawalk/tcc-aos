@@ -12,11 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "tcc-aos",
+        "title": "Service Order App",
         "width": 800,
         "height": 600,
         "url": "/login",
-        "devtools": false
+        "devtools": true
       }
     ],
     "security": {
