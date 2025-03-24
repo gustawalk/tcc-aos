@@ -1,54 +1,66 @@
 import { Injectable } from '@angular/core';
+import { invoke } from '@tauri-apps/api/core';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthService {
-  private isAuthenticated: boolean;
+  private isAuthenticated = false;
 
   constructor() {
-    const storedAuth = localStorage.getItem('isAuthenticated');
-    this.isAuthenticated
-      = storedAuth === 'true';
+    this.checkAuth();
   }
 
-  changeAuthBool(new_auth: boolean) {
-    if (new_auth) {
-      this.isAuthenticated = true;
-      localStorage.setItem('isAuthenticated', 'true');
-    } else {
+  async checkAuth() {
+    try {
+      const result = await invoke<boolean>('is_logged_in');
+      this.isAuthenticated = result;
+    } catch (error) {
+      console.error('Error checking auth: ', error)
       this.isAuthenticated = false;
-      localStorage.removeItem('isAuthenticated');
     }
   }
 
-  login(email: string, senha: string): boolean {
-    if (email === 'admin@admin.com' && senha === '1234') {
-      this.changeAuthBool(true);
-      return true;
+  async register(cpf: string, email: string, password: string): Promise<boolean> {
+    try {
+      const sucess = await invoke<boolean>('register', { cpf, email, password });
+      if (sucess) {
+        console.log("registro deu certo");
+        this.isAuthenticated = true;
+      }
+      return sucess;
+    } catch (error) {
+      console.error('Register error: ', error);
+      return false;
     }
-    return false;
   }
 
-  register(cpf: string, email: string, senha: string): boolean {
-    // Tratamento dos dados, vou criar um novo service especificamente para isso 
-
-    // placeholder temporario
-
-    if (cpf != '' && email != '' && senha != '') {
-      this.isAuthenticated = true;
-      return true
+  async login(email: string, password: string): Promise<boolean> {
+    try {
+      const success = await invoke<boolean>('login', { email, password });
+      if (success) {
+        console.log('deu certo o login')
+        this.isAuthenticated = true;
+      }
+      return success;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-
-    return false;
   }
 
-  logout() {
-    this.changeAuthBool(false);
+  async logout(): Promise<boolean> {
+    try {
+      await invoke<boolean>('logout');
+      this.isAuthenticated = false;
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+    return true;
   }
 
   isLogged(): boolean {
     return this.isAuthenticated;
   }
 }
-

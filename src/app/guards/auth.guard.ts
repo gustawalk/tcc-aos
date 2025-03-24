@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterState, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -10,11 +10,24 @@ export class AuthGuard {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
-    if (this.authService.isLogged()) {
+
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+    await this.authService.checkAuth();
+
+    let isLogged = this.authService.isLogged();
+    console.log("PENIS IMENSO ", isLogged)
+    const routePath = state.url;
+
+    if (!isLogged && routePath !== '/login' && routePath !== '/register') {
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    if (isLogged && (routePath === '/login' || routePath === '/register')) {
       this.router.navigate(['/home']);
       return false;
     }
+
     return true;
   }
 }

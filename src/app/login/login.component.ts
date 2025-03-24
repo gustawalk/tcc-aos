@@ -20,12 +20,20 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  fazerLogin() {
-    if (this.authService.login(this.email, this.senha)) {
+  async fazerLogin() {
+    const sucess = await this.authService.login(this.email, this.senha);
+
+    if (sucess) {
       alert("logado com sucesso")
       this.router.navigate(['/home']);
     } else {
       alert("login invalido")
     }
+  }
+
+  async forceHome() {
+
+    console.log(this.authService.isLogged())
+    this.router.navigate(['/home']);
   }
 }

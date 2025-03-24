@@ -13,8 +13,20 @@ export class HomeComponent {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  logoutUser() {
-    this.authService.logout();
+
+  async logoutUser() {
+    const sucess = await this.authService.logout();
+
+    if (sucess) {
+      alert("deslogado!");
+      this.router.navigate(['/login']);
+    }
+    else {
+      alert("erro em algo");
+    }
+  }
+
+  forceLogin() {
     this.router.navigate(['/login']);
   }
 }

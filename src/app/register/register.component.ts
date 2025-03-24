@@ -22,12 +22,15 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  fazerRegistro() {
-    if (this.authService.register(this.cpf, this.email, this.senha)) {
+  async fazerRegistro() {
+    const sucess = await this.authService.register(this.cpf, this.email, this.senha);
+    if (sucess) {
       alert("Registrado com sucesso")
       this.router.navigate(['/home'])
     } else {
       alert("Erro no registro sla")
     }
+
+    return;
   }
 }
