@@ -1,5 +1,9 @@
 use tauri::State;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
+mod models;
+mod database;
+use database::Database;
+use models::UserDB::UsersDB;
 
 struct AuthState{
     logged_in: Mutex<bool>,
@@ -12,14 +16,9 @@ fn is_logged_in(state: State<AuthState>) -> bool {
 
 #[tauri::command]
 fn register(cpf: String, email: String, password: String, state: State<AuthState>) -> bool{
-
-    // tentar inserir no db depois, melhorar a checagem dos dados
-
-    if !email.is_empty() && !cpf.is_empty() && !password.is_empty(){
-        *state.logged_in.lock().unwrap() = true;
-        return true;
-    }
-    false
+    let user_db = UsersDB::new();
+    user_db.funcionando();
+    true
 }
 
 #[tauri::command]
