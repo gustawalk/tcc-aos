@@ -15,7 +15,6 @@ export class AuthGuard {
     await this.authService.checkAuth();
 
     let isLogged = this.authService.isLogged();
-    console.log("PENIS IMENSO ", isLogged)
     const routePath = state.url;
 
     if (!isLogged && routePath !== '/login' && routePath !== '/register') {
