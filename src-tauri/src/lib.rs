@@ -1,8 +1,7 @@
 use tauri::State;
-use std::sync::{Arc, Mutex};
+use std::sync::Mutex;
 mod models;
 mod database;
-use database::Database;
 use models::user_db::UsersDB;
 use crate::models::model_db::QueryResult;
 
@@ -50,14 +49,19 @@ fn custom_query() -> String {
 
 #[tauri::command]
 fn login(email: String, password: String, state: State<AuthState>) -> bool {
-    let user_db = UsersDB::new();
+    let user_db = UsersDB::new();                                               // substituir por uma funcao de validacao de hash que retorna um &str;
     match user_db.select("*", Some("email_user = ? AND senha_user = ?"), vec![&email, &password]) {
         Ok(results) => {
-            for (index, row) in results.iter().enumerate() {
-                println!("Row {}: {:?}", index, row);
-            }
+            // for (index, row) in results.iter().enumerate() {
+            //     println!("Row {}: {:?}", index, row);
+            // }
 
             if !results.is_empty() {
+                let email = &email;
+
+                if let Some(user) = UsersDB::get_user_by_email(email) {
+                    println!("User: {:?}", user);
+                }
                 *state.logged_in.lock().unwrap() = true;
                 true
             } else {

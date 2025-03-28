@@ -1,5 +1,4 @@
-use mysql::prelude::Queryable;
-use mysql::{Pool, PooledConn, Opts, Result, Row};
+use mysql::{Pool, PooledConn, Result};
 use std::sync::{Arc, Mutex};
 
 pub struct Database {

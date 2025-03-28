@@ -1,9 +1,6 @@
-use crate::database;
 use crate::database::Database;
 use dotenv::dotenv;
-use mysql::{PooledConn, Value, Row, Result, Opts};
 use mysql::prelude::Queryable;
-use std::collections::HashMap;
 use std::env;
 
 pub struct Model {
